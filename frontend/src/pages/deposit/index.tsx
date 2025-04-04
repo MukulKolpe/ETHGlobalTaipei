@@ -103,6 +103,159 @@ const SETTLER =
   "0xbF59f5a5931B9013A6d3724d0D3A2a0abafe3Afc";
 const ESCROW_ADDRESS = process.env.NEXT_PUBLIC_ESCROW_ADDRESS || "";
 
+// Replace the BridgeAnimation component with this enhanced version
+function BridgeAnimation({ sourceNetwork, destNetwork }) {
+  return (
+    <div className="relative w-full h-full">
+      {/* Enhanced Glow Effect */}
+      <div className="absolute inset-0 bg-blue-500/10 rounded-full blur-3xl"></div>
+
+      {/* Bridge Path */}
+      <svg
+        className="absolute inset-0"
+        width="100%"
+        height="100%"
+        viewBox="0 0 300 80"
+        preserveAspectRatio="none"
+      >
+        <defs>
+          <linearGradient id="bridgeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.3" />
+            <stop offset="50%" stopColor="#60A5FA" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.3" />
+          </linearGradient>
+
+          <linearGradient id="pathGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#3B82F6" stopOpacity="0" />
+            <stop offset="50%" stopColor="#60A5FA" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="#3B82F6" stopOpacity="0" />
+          </linearGradient>
+
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+
+          <filter id="pathShadow" height="130%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+            <feOffset dx="0" dy="4" result="offsetblur" />
+            <feComponentTransfer>
+              <feFuncA type="linear" slope="0.2" />
+            </feComponentTransfer>
+            <feMerge>
+              <feMergeNode />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        {/* Glowing Path Background */}
+        <path
+          d="M 10,60 C 50,10 250,10 290,60"
+          fill="none"
+          stroke="url(#pathGlow)"
+          strokeWidth="12"
+          strokeLinecap="round"
+          opacity="0.5"
+        />
+
+        {/* Bridge Arc */}
+        <path
+          d="M 10,60 C 50,10 250,10 290,60"
+          fill="none"
+          stroke="url(#bridgeGradient)"
+          strokeWidth="2.5"
+          strokeDasharray="5,3"
+          filter="url(#pathShadow)"
+        />
+
+        {/* Animated Particles */}
+        <circle
+          className="animate-pulse"
+          r="5"
+          fill="#60A5FA"
+          filter="url(#glow)"
+        >
+          <animateMotion
+            path="M 10,60 C 50,10 250,10 290,60"
+            dur="3s"
+            repeatCount="indefinite"
+          />
+        </circle>
+
+        <circle r="3.5" fill="#93C5FD" opacity="0.8" filter="url(#glow)">
+          <animateMotion
+            path="M 10,60 C 50,10 250,10 290,60"
+            dur="4s"
+            repeatCount="indefinite"
+            begin="1s"
+          />
+        </circle>
+
+        <circle r="2.5" fill="#DBEAFE" opacity="0.6" filter="url(#glow)">
+          <animateMotion
+            path="M 10,60 C 50,10 250,10 290,60"
+            dur="5s"
+            repeatCount="indefinite"
+            begin="0.5s"
+          />
+        </circle>
+      </svg>
+
+      {/* Network Labels with Enhanced Styling */}
+      <div className="absolute bottom-2 left-2 text-sm font-medium flex items-center gap-2 bg-slate-800/70 px-3 py-1 rounded-full border border-blue-900/30 shadow-[0_0_10px_rgba(59,130,246,0.15)]">
+        {sourceNetwork ? (
+          <>
+            <div
+              className="relative w-5 h-5 rounded-full overflow-hidden shadow-[0_0_5px_rgba(59,130,246,0.3)]"
+              style={{ backgroundColor: sourceNetwork.color }}
+            >
+              <Image
+                src={sourceNetwork.icon || "/placeholder.svg"}
+                alt={sourceNetwork.name}
+                fill
+                className="object-cover"
+              />
+            </div>
+            <span className="text-white">{sourceNetwork.name}</span>
+          </>
+        ) : (
+          <span className="text-gray-400">Source Chain</span>
+        )}
+      </div>
+
+      <div className="absolute bottom-2 right-2 text-sm font-medium flex items-center gap-2 bg-slate-800/70 px-3 py-1 rounded-full border border-blue-900/30 shadow-[0_0_10px_rgba(59,130,246,0.15)]">
+        {destNetwork ? (
+          <>
+            <span className="text-white">{destNetwork.name}</span>
+            <div
+              className="relative w-5 h-5 rounded-full overflow-hidden shadow-[0_0_5px_rgba(59,130,246,0.3)]"
+              style={{ backgroundColor: destNetwork.color }}
+            >
+              <Image
+                src={destNetwork.icon || "/placeholder.svg"}
+                alt={destNetwork.name}
+                fill
+                className="object-cover"
+              />
+            </div>
+          </>
+        ) : (
+          <span className="text-gray-400">Destination Chain</span>
+        )}
+      </div>
+
+      {/* Dutch Auction Label with Enhanced Styling */}
+      <div className="absolute left-1/2 -translate-x-1/2 top-4 text-sm text-blue-300 font-medium bg-blue-900/40 px-4 py-1.5 rounded-full border border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.4)] backdrop-blur-sm">
+        <span className="flex items-center gap-1.5">
+          <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
+          Dutch Auction
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export default function DepositPage() {
   // State for source selection
   const [sourceNetwork, setSourceNetwork] = useState<
@@ -164,6 +317,84 @@ export default function DepositPage() {
 
   // Get destination token details
   const destTokenDetails = getTokenDetails(destToken, destNetwork?.id);
+
+  // Check balance when source token changes
+  useEffect(() => {
+    const checkBalance = async () => {
+      if (
+        !sourceTokenDetails ||
+        !sourceNetwork ||
+        !window.ethereum ||
+        !window.ethereum._state?.accounts?.length
+      )
+        return;
+
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const accounts = await provider.listAccounts();
+        if (accounts.length === 0) return;
+
+        const tokenContract = new ethers.Contract(
+          sourceTokenDetails.address,
+          ["function balanceOf(address) view returns (uint256)"],
+          provider
+        );
+
+        const rawBalance = await tokenContract.balanceOf(accounts[0]);
+        const formattedBalance = ethers.utils.formatUnits(rawBalance, 18); // Assuming 18 decimals
+        setBalance(Number.parseFloat(formattedBalance).toFixed(2));
+      } catch (error) {
+        console.error("Error fetching balance:", error);
+        setBalance("0.00");
+      }
+    };
+
+    checkBalance();
+  }, [sourceTokenDetails, sourceNetwork]);
+
+  // Validate input amounts
+  useEffect(() => {
+    if (depositAmount && minExpectedAmount) {
+      const depositValue = Number.parseFloat(depositAmount);
+      const minExpectedValue = Number.parseFloat(minExpectedAmount);
+
+      if (minExpectedValue >= depositValue) {
+        setIsValid(false);
+        setErrorMessage(
+          "Minimum expected amount must be less than deposit amount"
+        );
+      } else {
+        setIsValid(true);
+        setErrorMessage("");
+      }
+    } else {
+      setIsValid(true);
+      setErrorMessage("");
+    }
+  }, [depositAmount, minExpectedAmount]);
+
+  // Set default minExpectedAmount when depositAmount changes
+  useEffect(() => {
+    if (depositAmount) {
+      // Set min expected as 90% of deposit amount as a default
+      const minAmount = (Number.parseFloat(depositAmount) * 0.9).toFixed(2);
+      setMinExpectedAmount(minAmount);
+    }
+  }, [depositAmount]);
+
+  // Handle network and token selection
+  const handleSourceNetworkSelect = (network) => {
+    setSourceNetwork(network);
+    // Reset token if not available in the new network
+    if (sourceToken && !tokens[sourceToken]?.addresses[network.id]) {
+      setSourceToken(null);
+    }
+
+    // If same network is selected for destination, swap them
+    if (destNetwork && network.id === destNetwork.id) {
+      setDestNetwork(sourceNetwork);
+    }
+  };
 
   const handleDestNetworkSelect = (network) => {
     setDestNetwork(network);
@@ -250,6 +481,40 @@ export default function DepositPage() {
 
       setIsSwapping(false);
     }, 500);
+  };
+
+  // Handle max button click
+  const handleMaxClick = async () => {
+    if (!sourceTokenDetails || !sourceNetwork || !window.ethereum) return;
+
+    try {
+      // Get the latest balance
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const accounts = await provider.listAccounts();
+      if (accounts.length === 0) return;
+
+      const tokenContract = new ethers.Contract(
+        sourceTokenDetails.address,
+        ["function balanceOf(address) view returns (uint256)"],
+        provider
+      );
+
+      const rawBalance = await tokenContract.balanceOf(accounts[0]);
+      const formattedBalance = ethers.utils.formatUnits(rawBalance, 18); // Assuming 18 decimals
+      const currentBalance = Number.parseFloat(formattedBalance).toFixed(2);
+
+      // Set the deposit amount to the current balance
+      setDepositAmount(currentBalance);
+
+      // Set min expected as 90% of deposit amount as a default suggestion
+      const minAmount = (Number.parseFloat(currentBalance) * 0.9).toFixed(2);
+      setMinExpectedAmount(minAmount);
+
+      // Update the displayed balance
+      setBalance(currentBalance);
+    } catch (error) {
+      console.error("Error getting max balance:", error);
+    }
   };
 
   // Handle deposit submission
@@ -577,6 +842,15 @@ export default function DepositPage() {
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-blue-400 hover:text-blue-500 transition-colors duration-200 p-0 h-auto text-base hover:bg-transparent"
+                  onClick={handleMaxClick}
+                >
+                  MAX
+                </Button>
               </div>
 
               {/* Network Selection Below */}
@@ -683,6 +957,41 @@ export default function DepositPage() {
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              {/* Swap Direction Button */}
+              <div className="relative flex justify-center my-6">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-full border-t border-blue-900/30"></div>
+                </div>
+
+                <div className="relative z-10">
+                  <div className="absolute inset-0 bg-blue-500/10 blur-xl rounded-full"></div>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="relative rounded-full h-14 w-14 bg-slate-800 border-blue-500/50 hover:bg-blue-900/40 z-10 shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+                    onClick={handleSwapDirection}
+                    disabled={!sourceNetwork || !destNetwork}
+                  >
+                    <RefreshCw
+                      className={cn(
+                        "h-6 w-6 text-blue-400",
+                        isSwapping && "animate-spin"
+                      )}
+                    />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Bridge Animation */}
+              <div className="relative h-32 my-8">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <BridgeAnimation
+                    sourceNetwork={sourceNetwork}
+                    destNetwork={destNetwork}
+                  />
+                </div>
+              </div>
 
               {/* Replace the Get Tokens section UI with this updated version */}
               <div className="mb-8">
@@ -957,6 +1266,19 @@ export default function DepositPage() {
             </div>
           </div>
         </Card>
+
+        {/* Additional Info */}
+        <div className="mt-8 text-center text-base text-gray-300">
+          <p>
+            Tokens will be bridged via our Dutch auction mechanism.
+            <a
+              href="#"
+              className="text-blue-400 hover:text-blue-300 ml-1 underline underline-offset-2"
+            >
+              Learn more
+            </a>
+          </p>
+        </div>
       </motion.div>
     </div>
   );
