@@ -6,7 +6,7 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/use-media-query";
-// import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -53,12 +53,12 @@ export function Navbar() {
           <Link href="/auctions" className="font-bold text-xl text-white">
             Auctions
           </Link>
-          {/* <ConnectButton
+          <ConnectButton
             accountStatus={{
               smallScreen: "avatar",
               largeScreen: "full",
             }}
-          /> */}
+          />
         </nav>
 
         {/* Mobile Navigation Toggle */}
@@ -77,12 +77,12 @@ export function Navbar() {
         <div className="md:hidden absolute top-full left-0 right-0 bg-slate-900/95 backdrop-blur-md shadow-lg p-6 border-t border-slate-800 animate-in slide-in-from-top">
           <nav className="flex flex-col gap-6">
             <NavLinks mobile onClick={() => setIsOpen(false)} />
-            {/* <ConnectButton
+            <ConnectButton
               accountStatus={{
                 smallScreen: "avatar",
                 largeScreen: "full",
               }}
-            /> */}
+            />
           </nav>
         </div>
       )}
