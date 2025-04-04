@@ -41,7 +41,7 @@ const networks = [
     id: "ethereum",
     name: "Ethereum",
     chainId: 11155111, // Sepolia
-    icon: "/assets/ethereum-logo.svg",
+    icon: "/assets/ethereum.svg",
     color: "#627EEA",
     testnet: "Sepolia",
   },
@@ -49,7 +49,7 @@ const networks = [
     id: "rootstock",
     name: "Rootstock",
     chainId: 31,
-    icon: "/assets/rootstock-logo.svg",
+    icon: "/assets/rootstock.svg",
     color: "#00A14A",
     testnet: "Testnet",
   },
@@ -57,7 +57,7 @@ const networks = [
     id: "citrea",
     name: "Citrea",
     chainId: 5115,
-    icon: "/assets/t1-logo.svg",
+    icon: "/assets/citrea.svg",
     color: "#3B82F6",
     testnet: "Testnet",
   },
@@ -67,7 +67,7 @@ const networks = [
 const tokens = {
   usdc: {
     name: "USDC",
-    icon: "/assets/usdc-logo.svg",
+    icon: "/assets/usdc.svg",
     color: "#2775CA",
     addresses: {
       ethereum: "0xA70638af71aD445D6E899790e327e73A0ba09e4f", // Sepolia
@@ -77,7 +77,7 @@ const tokens = {
   },
   usdt: {
     name: "USDT",
-    icon: "/assets/usdt-logo.svg",
+    icon: "/assets/usdt.svg",
     color: "#26A17B",
     addresses: {
       ethereum: "0x30E9b6B0d161cBd5Ff8cf904Ff4FA43Ce66AC346",
@@ -87,7 +87,7 @@ const tokens = {
   },
   dai: {
     name: "DAI",
-    icon: "/assets/dai-logo.svg",
+    icon: "/assets/dai.svg",
     color: "#F5AC37",
     addresses: {
       ethereum: "0x68194a729C2450ad26072b3D33ADaCbcef39D574",
