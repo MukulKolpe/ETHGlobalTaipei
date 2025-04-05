@@ -42,7 +42,7 @@ export function Navbar() {
               <span className="text-blue-400 font-bold text-lg">t1</span>
             </div>
           </div>
-          <span className="font-bold text-2xl text-white">ETHGlobalTaipei</span>
+          <span className="font-bold text-2xl text-white">OctoIntents</span>
         </Link>
 
         {/* Desktop Navigation */}
