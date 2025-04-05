@@ -21,7 +21,6 @@ import {IMailbox} from "@hyperlane-xyz/interfaces/IMailbox.sol";
 contract DutchAuction is Base7683,BasicSwap7683,Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
     uint32 public immutable localDomain;
-    address public counterpart;
     uint32 internal constant DEFAULT_GAS_LIMIT = 1_000_000;
     IMailbox public mailbox;
 
@@ -60,6 +59,7 @@ contract DutchAuction is Base7683,BasicSwap7683,Ownable, ReentrancyGuard {
     mapping(uint256 => BidInfo) public auctionBids;
     mapping(uint256 => AuctionParties) public auctionParties;
     mapping(bytes32 => uint256) public orderIdToAuctionId;
+    mapping(uint32 => address) public chainIdToEscrow;
 
     // Counter for auction IDs
     uint256 public nextAuctionId;
@@ -116,9 +116,8 @@ contract DutchAuction is Base7683,BasicSwap7683,Ownable, ReentrancyGuard {
 
     // ============ Constructor ============
 
-    constructor(address _permit2,uint32 localDomain_,address _counterpart,address _mailbox) Ownable(msg.sender) BasicSwap7683(_permit2) {
+    constructor(address _permit2,uint32 localDomain_,address _mailbox) Ownable(msg.sender) BasicSwap7683(_permit2) {
         localDomain = localDomain_;
-        counterpart = _counterpart;
         mailbox = IMailbox(_mailbox);
     }
 
@@ -260,6 +259,18 @@ contract DutchAuction is Base7683,BasicSwap7683,Ownable, ReentrancyGuard {
             "Price drop must be less than 100%"
         );
         defaultPriceDropPercent = _defaultPriceDropPercent;
+    }
+
+    /**
+     * @notice Set the escrow address for a specific chain
+     * @param _chainId The chain ID
+     * @param _escrow The address of the escrow contract
+     */
+    function setEscrow(
+        uint32 _chainId,
+        address _escrow
+    ) external onlyOwner {
+        chainIdToEscrow[_chainId] = _escrow;
     }
 
     /**
@@ -620,14 +631,14 @@ contract DutchAuction is Base7683,BasicSwap7683,Ownable, ReentrancyGuard {
         bytes memory innerMessage = Hyperlane7683Message.encodeSettle(_orderIds, _ordersFillerData);
         uint256 fee = mailbox.quoteDispatch(
             _originDomain,
-            TypeCasts.addressToBytes32(counterpart),
+            TypeCasts.addressToBytes32(chainIdToEscrow[_originDomain]),
             innerMessage,
             bytes("")
         );
         
         mailbox.dispatch{value: fee}(
             _originDomain,
-            TypeCasts.addressToBytes32(counterpart),
+            TypeCasts.addressToBytes32(chainIdToEscrow[_originDomain]),
             innerMessage,
             bytes("")
         );
