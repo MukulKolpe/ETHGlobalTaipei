@@ -8,7 +8,7 @@ export const SUPPORTED_NETWORKS = [
     chainId: 11155111,
     rpcUrl: "https://rpc.sepolia.org",
     icon: "/assets/ethereum.svg",
-    color: "#627EEA", // Uncommented for use in UI
+    // color: "#627EEA", // Uncommented for use in UI
     explorerUrl: "https://sepolia.etherscan.io",
     contracts: {
       dutchAuction: "0x21654dFbF44125271e87f71633ec1af17d0D685a",
@@ -21,7 +21,6 @@ export const SUPPORTED_NETWORKS = [
     chainId: 31,
     rpcUrl: "https://public-node.testnet.rsk.co",
     icon: "/assets/rootstock.svg",
-    color: "#FF9900", // Uncommented for use in UI
     explorerUrl: "https://explorer.testnet.rsk.co",
     contracts: {
       dutchAuction: "0x21654dFbF44125271e87f71633ec1af17d0D685a",
@@ -34,7 +33,6 @@ export const SUPPORTED_NETWORKS = [
     chainId: 5115,
     rpcUrl: "https://rpc.testnet.citrea.xyz",
     icon: "/assets/citrea.svg",
-    color: "#3B82F6",
     explorerUrl: "https://explorer.testnet.citrea.xyz",
     contracts: {
       dutchAuction: process.env.NEXT_PUBLIC_SETTLER_ADDRESS,

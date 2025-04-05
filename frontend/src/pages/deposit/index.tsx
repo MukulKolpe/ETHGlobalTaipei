@@ -44,6 +44,12 @@ const networks = [
     icon: "/assets/ethereum.svg",
     color: "#627EEA",
     testnet: "Sepolia",
+    escrowAddress:
+      process.env.NEXT_PUBLIC_ETHEREUM_ESCROW_ADDRESS ||
+      "0x52f2a27dadb3b6be0b7ff8729e28a9a73442cf8f",
+    settlerAddress:
+      process.env.NEXT_PUBLIC_ETHEREUM_SETTLER_ADDRESS ||
+      "0x51396848b156a4575f5d096973a99e0eb89ab045",
   },
   {
     id: "rootstock",
@@ -52,6 +58,12 @@ const networks = [
     icon: "/assets/rootstock.svg",
     color: "#00A14A",
     testnet: "Testnet",
+    escrowAddress:
+      process.env.NEXT_PUBLIC_ROOTSTOCK_ESCROW_ADDRESS ||
+      "0xee6cdc460274ed05cddf00cd3a5e810c3936cdfa",
+    settlerAddress:
+      process.env.NEXT_PUBLIC_ROOTSTOCK_SETTLER_ADDRESS ||
+      "0xB6FD5839De303e991013C9EC011109db8AD3321D",
   },
   {
     id: "citrea",
@@ -60,6 +72,12 @@ const networks = [
     icon: "/assets/citrea.svg",
     color: "#3B82F6",
     testnet: "Testnet",
+    escrowAddress:
+      process.env.NEXT_PUBLIC_CITREA_ESCROW_ADDRESS ||
+      "0x26e091fc21e20572126406cc2dd9a5869de0bffe",
+    settlerAddress:
+      process.env.NEXT_PUBLIC_CITREA_SETTLER_ADDRESS ||
+      "0x94AA7d7A4e249ca9A12A834CeC057e91F886B92a",
   },
 ];
 
@@ -71,7 +89,7 @@ const tokens = {
     color: "#2775CA",
     addresses: {
       ethereum: "0xA70638af71aD445D6E899790e327e73A0ba09e4f", // Sepolia
-      rootstock: "0x4F21994B5f8F724839bA574F97E47f8F3f967Cae",
+      rootstock: "0x2FF407DAE17A31A737633bc0dAa2aB36294d1b44",
       citrea: "0xd0A9c6e7FF012F22Ba52038F9727b50e16466176", // Citrea
     },
   },
@@ -80,28 +98,12 @@ const tokens = {
     icon: "/assets/usdt.svg",
     color: "#26A17B",
     addresses: {
-      ethereum: "0x30E9b6B0d161cBd5Ff8cf904Ff4FA43Ce66AC346",
-      rootstock: "0x8aD1b8C4082D7aF6E9C3D9D9Fc95A431Fb3d8A11",
-      citrea: "0xb6E3F86a5CE9ac318F54C9C7Bcd6eff368DF0296",
-    },
-  },
-  dai: {
-    name: "DAI",
-    icon: "/assets/dai.svg",
-    color: "#F5AC37",
-    addresses: {
-      ethereum: "0x68194a729C2450ad26072b3D33ADaCbcef39D574",
-      rootstock: "0xCF1D0Bd7F6C2A8C05324d5D12fBa3E1eD2aa9451",
-      citrea: "0xd393b1E02dA9831Ff419e22eA105aAe4c47E1253",
+      ethereum: "0xB4F694250c2F9cF02aD2E777c2eF20A876b80b35",
+      rootstock: "0xB551eE1236593Fe6cB5a679c0962E89d30740FF8",
+      citrea: "0x6b53C44053449B4B9cAdAfe271f9E5cb930446Be",
     },
   },
 };
-
-// Constants
-const SETTLER =
-  process.env.NEXT_PUBLIC_SETTLER_ADDRESS ||
-  "0xbF59f5a5931B9013A6d3724d0D3A2a0abafe3Afc";
-const ESCROW_ADDRESS = process.env.NEXT_PUBLIC_ESCROW_ADDRESS || "";
 
 // Replace the BridgeAnimation component with this enhanced version
 function BridgeAnimation({ sourceNetwork, destNetwork }) {
@@ -566,6 +568,35 @@ export default function DepositPage() {
       const amountInWei = ethers.utils.parseEther(depositAmount);
       const minAmountWei = ethers.utils.parseEther(minExpectedAmount);
 
+      // Get the escrow address from the source network
+      const escrowAddress = sourceNetwork.escrowAddress;
+
+      // Get the settler address from the destination network
+      const settlerAddress = destNetwork.settlerAddress;
+
+      if (!escrowAddress) {
+        setErrorMessage(
+          `No escrow contract address found for ${sourceNetwork.name}`
+        );
+        setIsLoading(false);
+        return;
+      }
+
+      if (!settlerAddress) {
+        setErrorMessage(
+          `No settler contract address found for ${destNetwork.name}`
+        );
+        setIsLoading(false);
+        return;
+      }
+
+      console.log(
+        `Using escrow address: ${escrowAddress} on ${sourceNetwork.name}`
+      );
+      console.log(
+        `Using settler address: ${settlerAddress} on ${destNetwork.name}`
+      );
+
       // Approve token first
       const tokenContract = new ethers.Contract(
         sourceTokenDetails.address,
@@ -575,7 +606,7 @@ export default function DepositPage() {
 
       try {
         const approvalTx = await tokenContract.approve(
-          ESCROW_ADDRESS,
+          escrowAddress,
           ethers.constants.MaxUint256
         );
 
@@ -610,7 +641,7 @@ export default function DepositPage() {
         senderNonce: senderNonce,
         originDomain: sourceNetwork.chainId,
         destinationDomain: destNetwork.chainId,
-        destinationSettler: ethers.utils.hexZeroPad(SETTLER, 32),
+        destinationSettler: ethers.utils.hexZeroPad(settlerAddress, 32),
         fillDeadline: fillDeadline,
         data: "0x",
       };
@@ -643,13 +674,25 @@ export default function DepositPage() {
 
       // Create contract instance and call open function
       const escrowContract = new ethers.Contract(
-        ESCROW_ADDRESS,
+        escrowAddress,
         EscrowABI,
         signer
       );
 
+      // Set transaction value based on the source network
+      let txValue;
+      if (sourceNetwork.id === "ethereum") {
+        txValue = ethers.utils.parseEther("0.001");
+      } else if (sourceNetwork.id === "citrea") {
+        txValue = ethers.utils.parseEther("0.003");
+      } else if (sourceNetwork.id === "rootstock") {
+        txValue = ethers.utils.parseEther("0.0001");
+      } else {
+        txValue = ethers.utils.parseEther("0.001"); // Default fallback
+      }
+
       const tx = await escrowContract.open(order, {
-        value: ethers.utils.parseEther("0.001"),
+        value: txValue,
         gasLimit: 1000000,
       });
 
