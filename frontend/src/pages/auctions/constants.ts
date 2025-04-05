@@ -52,7 +52,7 @@ export const TOKEN_DEFINITIONS = {
     addresses: {
       ethereum: "0xA70638af71aD445D6E899790e327e73A0ba09e4f", // Sepolia
       rootstock: "0x4F21994B5f8F724839bA574F97E47f8F3f967Cae",
-      citrea: "0xC4A0fafFd686C4852020ED50152F6A171b2554ad", // Citrea
+      citrea: "0xd0A9c6e7FF012F22Ba52038F9727b50e16466176", // Citrea
     },
   },
   usdt: {
