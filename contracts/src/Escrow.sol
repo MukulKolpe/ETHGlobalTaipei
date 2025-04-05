@@ -16,7 +16,6 @@ contract Escrow is BasicSwap7683, Ownable {
     // ============ Constants ============
     uint32 public immutable localDomain;
     uint256 internal constant gasLimit = 1_000_000;
-    address public counterpart;
     IMailbox public mailbox;
 
     // ============ Storage variables ============
@@ -31,11 +30,9 @@ contract Escrow is BasicSwap7683, Ownable {
     constructor(
         uint32 localDomain_,
         address _permit2,
-        address _counterpart,
         address _mailbox
     ) Ownable(msg.sender) BasicSwap7683(_permit2) {
         localDomain = localDomain_;
-        counterpart = _counterpart;
         mailbox = IMailbox(_mailbox);
     }
 
@@ -72,14 +69,14 @@ contract Escrow is BasicSwap7683, Ownable {
                
                 uint256 fee = mailbox.quoteDispatch(
                     uint32(resolvedOrder.fillInstructions[i].destinationChainId),
-                    TypeCasts.addressToBytes32(counterpart),
+                    TypeCasts.addressToBytes32(chainToAuction[resolvedOrder.fillInstructions[i].destinationChainId]),
                     abi.encodePacked(selector,token,resolvedOrder.minReceived[i].amount,destToken,resolvedOrder.maxSpent[i].amount, msg.sender, orderId),
                     bytes("")
                 );
 
                 mailbox.dispatch{value: fee}(
                     uint32(resolvedOrder.fillInstructions[i].destinationChainId),
-                    TypeCasts.addressToBytes32(counterpart),
+                    TypeCasts.addressToBytes32(chainToAuction[resolvedOrder.fillInstructions[i].destinationChainId]),
                     abi.encodePacked(selector,token,resolvedOrder.minReceived[i].amount,destToken,resolvedOrder.maxSpent[i].amount, msg.sender, orderId),
                     bytes("")
                 );
@@ -91,6 +88,8 @@ contract Escrow is BasicSwap7683, Ownable {
         emit Open(orderId, resolvedOrder);
     }
 
+     // ============ Admin Functions ============
+
     /// @notice Sets the settlement contract address.
     /// @param _settlementContract The address of the settlement contract.
     function setSettlementContract(
@@ -99,12 +98,14 @@ contract Escrow is BasicSwap7683, Ownable {
         settlementContract = _settlementContract;
     }
 
-    /// @notice Sets the counterpart address.
-    /// @param _counterpart The address of the counterpart contract.
-    function setCounterpart(
-        address _counterpart
+    /// @notice Sets the auction address for a specific chain.
+    /// @param _chainId The chain ID.
+    /// @param _auction The address of the auction contract.
+    function setAuction(
+        uint256 _chainId,
+        address _auction
     ) external onlyOwner {
-        counterpart = _counterpart;
+        chainToAuction[_chainId] = _auction;
     }
 
     // ============ Internal Functions ============
