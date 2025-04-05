@@ -15,48 +15,50 @@ export function HowItWorks() {
     deposit: [
       {
         title: "User Deposits Tokens",
-        description: "Alice deposits tokens to the Escrow contract on L1.",
+        description: "Alice deposits tokens to the chain c1.",
         icon: "💰",
       },
       {
-        title: "Tokens Bridged to t1",
-        description: "Tokens are bridged to t1 via the L1ERC20Gateway.",
+        title: "Message dispatched via hyperlane",
+        description:
+          "The message is dispatched to chain c2 using hyperlane mailbox.",
         icon: "🌉",
       },
     ],
     auction: [
       {
         title: "Dutch Auction Starts",
-        description: "A Dutch auction starts on t1 with an initial price.",
+        description:
+          "A Dutch auction starts on chain c2 with an initial price.",
         icon: "🏛️",
       },
       {
         title: "Price Decreases Over Time",
         description:
-          "The price decreases linearly until a filler accepts or the reserve price is reached.",
+          "The price decreases linearly until a solver accepts or the auction window is closed.",
         icon: "⏱️",
       },
       {
-        title: "Filler Accepts Price",
+        title: "Solver Accepts Price",
         description:
-          "The first bidder to accept the current price wins the auction.",
+          "The first solver to accept the current price wins the auction.",
         icon: "🎯",
       },
     ],
     settlement: [
       {
-        title: "Filler Executes Settlement",
-        description: "The winning filler executes the settlement on L1.",
+        title: "Solver Executes Settlement",
+        description: "The winning solver executes the settlement on chain c2.",
         icon: "✅",
       },
       {
         title: "Tokens Transferred to User",
-        description: "The filler transfers tokens to Alice on L1.",
+        description: "The solver transfers tokens to Alice on chain c1.",
         icon: "↩️",
       },
       {
-        title: "Filler Receives Tokens",
-        description: "The filler receives Alice's tokens on t1.",
+        title: "Solver Receives Tokens",
+        description: "The solver receives Alice's tokens on chain c2.",
         icon: "🔄",
       },
     ],
@@ -176,9 +178,9 @@ export function HowItWorks() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <p className="text-gray-300 text-lg mb-6">
-                  The Dutch auction works by starting with a high price
-                  (typically 120% of the minimum destination amount) and
-                  linearly decreasing the price over time until a filler accepts
+                  The Dutch auction works by starting with a high price (let's
+                  say something like 120% of the minimum destination amount) and
+                  linearly decreasing the price over time until a solver accepts
                   or the reserve price is reached.
                 </p>
                 <p className="text-gray-300 text-lg">

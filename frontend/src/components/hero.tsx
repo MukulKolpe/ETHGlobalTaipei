@@ -176,12 +176,12 @@ export function Hero() {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-600 leading-tight">
-              Unifying EVM / BTC using Intents based Cross-Chain Bridging
+              Unifying EVM & BTC using Cross-Chain Intents
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto">
-              Seamlessly bridge tokens between L1 and t1 with our Dutch auction
-              mechanism, powered by Trusted Execution Environments and Real-Time
-              Proving technology.
+              Seamlessly bridge tokens between Chain 1 and Chain 2 using
+              cross-chain intents, powered by our Dutch auction-based solver
+              infrastructure—built on ERC-7683 and Hyperlane.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <Button
