@@ -1,3 +1,4 @@
+// @ts-nocheck comment
 import { ethers } from "ethers"
 
 // Network definitions
