@@ -156,6 +156,10 @@ DutchAuction.sol - https://sepolia.etherscan.io/address/0x51396848b156a4575f5d09
 
 ---
 
+## Architecture Diagram
+
+![Getting Started](OctoIntents.png)
+
 ## 🚀 Summary
 
 A unified cross-chain settlement framework that leverages:
