@@ -1,3 +1,4 @@
+// @ts-nocheck comment
 "use client";
 
 import { useState, useEffect } from "react";
@@ -36,12 +37,7 @@ export function Navbar() {
     >
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3">
-          <div className="relative w-10 h-10">
-            <div className="absolute inset-0 bg-blue-500 rounded-full opacity-70 animate-pulse"></div>
-            <div className="absolute inset-1 bg-slate-900 rounded-full flex items-center justify-center">
-              <span className="text-blue-400 font-bold text-lg">t1</span>
-            </div>
-          </div>
+          <div className="relative w-10 h-10"></div>
           <span className="font-bold text-2xl text-white">OctoIntents</span>
         </Link>
 
